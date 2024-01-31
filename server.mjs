@@ -1,16 +1,20 @@
 import express from 'express';
 import http from 'http';
-import socketIo from 'socket.io';
+import { Server as SocketIo } from 'socket.io';
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = new SocketIo(server);
 
 app.use(express.static('public'));
 
 io.on('connection', (socket) => {
   console.log('A user connected');
 
+  socket.on('typing', () => {
+    // Broadcast the "typing" event to all connected clients
+    socket.broadcast.emit('typing');
+  });
   // Handle incoming messages
   socket.on('message', (message) => {
     // Broadcast the message to all connected clients
