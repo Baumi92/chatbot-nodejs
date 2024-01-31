@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatbot</title>
+    <style>
+      /* Add your CSS styles here */
+    </style>
+  </head>
+  <body>
+    <div id="chat-container">
+      <ul id="messages"></ul>
+      <input id="message-input" autocomplete="off" /><button
+        onclick="sendMessage()"
+      >
+        Send
+      </button>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      // Add event listener to handle incoming messages
+      socket.on('message', (message) => {
+        const messages = document.getElementById('messages');
+        const li = document.createElement('li');
+        li.textContent = message;
+        messages.appendChild(li);
+      });
+
+      // Function to send a message
+      function sendMessage() {
+        const input = document.getElementById('message-input');
+        const message = input.value.trim();
+
+        if (message !== '') {
+          // Emit the message to the server
+          socket.emit('message', message);
+
+          // Clear the input field
+          input.value = '';
+        }
+      }
+    </script>
+  </body>
+</html>
